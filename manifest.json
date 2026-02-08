@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "YT Copy Subtitles",
-  "version": "1.0",
-  "description": "This extension let you copy the current subtitle to your clipboard",
+  "version": "1.1",
+  "description": "This extension let you on Youtube to copy the current subtitle to your clipboard",
   "action": {
     "default_popup": "popup.html"
   },

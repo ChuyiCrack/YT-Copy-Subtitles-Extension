@@ -26,24 +26,28 @@ btn.addEventListener("click", () => {
       {
         target: { tabId: tabId },
         func: () => {
-         const currSubtitle = document.querySelector('span.ytp-caption-segment');
-         return currSubtitle ? currSubtitle.textContent.trim() : null;
+         const currSubtitle = document.querySelectorAll('span.ytp-caption-segment');
+         return Array.from(currSubtitle).map(span => span.textContent.trim());
         }
       },
       (results) => {
         // 4. Back in the POPUP
-        const valuesFromPage = results[0].result;  // array of text
-        if (valuesFromPage) {
-          copyAlert.textContent = "Copied";
-          console.log(valuesFromPage)
-          copyClipBoard(valuesFromPage)
-        } else {
+        const listSpansSubtitle = results[0].result;  // array of text
+        if(!listSpansSubtitle || listSpansSubtitle.length === 0) {
           copyAlert.textContent = "Subtitle not found";
           copyAlert.style.color = "red";
-        }
-      }
-    );
-  });
+          } 
+        else {
+          let allSubtitles = "";
+
+          listSpansSubtitle.forEach(text => {
+            allSubtitles += text + " ";
+          });
+          copyAlert.textContent = "Copied";
+          copyClipBoard(allSubtitles.trim());         
+          }
+        });
+      });
 });
 
 
@@ -58,11 +62,3 @@ function notInYtVideo(){
   Alert.innerText = "You are not in a YT Video";
   document.getElementById("MainContainer").style.display = "None";
 }
-
-
-
-
-
-
-
-
