@@ -3,6 +3,7 @@ const Alert = document.getElementById("AnyAlert");
 const copyAlert = document.getElementById("copiedAlert");
 
 
+const port = chrome.runtime.connect({ name: "popup" });
 
 
 chrome.tabs.query({active:true , currentWindow:true},(tabs) => {
@@ -14,7 +15,17 @@ chrome.tabs.query({active:true , currentWindow:true},(tabs) => {
     notInYtVideo()
     return;
   }
-});
+  chrome.scripting.executeScript(
+      {
+        target: { tabId: tab.id },
+        func: () => {
+          const video = document.querySelector("video");
+          if(video && !video.paused){
+            video.pause();      
+          }
+        }
+    });
+  });
 
 btn.addEventListener("click", () => {
   // 1. Get active tab
@@ -49,6 +60,28 @@ btn.addEventListener("click", () => {
         });
       });
 });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") {
+    // Popup is being closed / hidden
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          console.log("closing popup");
+          const video = document.querySelector("video");
+          if (video && video.paused) {
+            video.play();
+          }
+        }
+      });
+    });
+  }
+});
+
+
 
 
 function copyClipBoard(text){
